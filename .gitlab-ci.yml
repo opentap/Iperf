@@ -1,0 +1,81 @@
+variables:
+  REPO_URL: 'packages.opentap.io'
+  DOCKER_REGISTRY: 'registry.gitlab.com'
+  PLUGIN: 'Iperf'
+#----------------------------------------------------------------------------------------------------------------------
+
+stages:
+  - docs
+  - build
+  - tests
+  - publish
+  - stage
+#----------------------------------------------------------------------------------------------------------------------
+
+#############################################
+# Stage: docs                               #
+#############################################
+Documentation:
+  stage: docs
+  image: $DOCKER_REGISTRY/opentap/buildrunners/documentationgeneration:latest
+  tags: [docker,gce]
+  script:
+    - tap generate-chm "Documentation/Help/Readme.md" --out "$PLUGIN/Help.chm" --title "OpenTAP $PLUGIN Package Help" --startpage "Documentation/Help/Welcome/Readme.md"
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - $PLUGIN/*.chm
+#----------------------------------------------------------------------------------------------------------------------
+
+#############################################
+# Stage: build                              #
+#############################################
+Build:
+  stage: build
+  image: opentapio/opentap:9.7-ubuntu18.04
+  tags: [docker,gce]
+  script:
+    - apt-get clean && apt-get update && apt-get install -y locales
+    - locale-gen en_US.UTF-8
+    - dotnet --list-sdks
+    - dotnet publish -c Release
+    - mv OpenTap.Plugins.$PLUGIN/bin/Release/*.TapPackage .
+  artifacts:
+    expire_in: 1 day
+    paths:
+       - "*.TapPackage"
+#----------------------------------------------------------------------------------------------------------------------  
+
+#############################################
+# Stage: tests                              #
+#############################################
+Tests:
+  stage: tests
+  image: opentapio/opentap:9.7-ubuntu18.04
+  tags: [ docker,gce]
+  dependencies:
+    - Build
+  script:
+    - apt-get clean && apt-get update && apt-get install -y locales
+    - locale-gen en_US.UTF-8
+    - dotnet restore
+    - dotnet publish -c Release -o ../bin
+    - dotnet vstest bin/OpenTap.Plugins.$PLUGIN.UnitTests.dll
+#----------------------------------------------------------------------------------------------------------------------
+
+#############################################
+# Stage: publish                            #
+#############################################
+AutoPublish:
+  stage: publish
+  image: opentapio/opentap:9.7-ubuntu18.04
+  tags: [docker,gce]
+  only:
+    - master
+  dependencies:
+    - Build
+    - Tests
+  script:
+    - tap package install PackagePublish
+    - tap package publish -k $REPO_PUBLISH_KEY -r $REPO_URL $PLUGIN*.TapPackage
+#----------------------------------------------------------------------------------------------------------------------

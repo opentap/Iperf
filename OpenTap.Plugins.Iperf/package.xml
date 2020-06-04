@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- 
+InfoLink: Specifies a location where additional information about the package can be found.
+Version: The version of the package. Must be in a semver 2.0 compatible format. This can be automatically updated from GIT.
+
+For Version the following macro is available (Only works if the project directory is under Git source control):
+$(GitVersion) - Gets the version from Git in the recommended format Major.Minor.Build-PreRelease+CommitHash.BranchName.
+-->
+<Package Name="Iperf" Version="$(GitVersion)" OS="Windows,Linux" Architecture="AnyCPU" xmlns="http://opentap.io/schemas/package">
+  <Description>The tappackage contains an instrument that handles the connection to the Iperf client machine using a SSH connection. It also contains a basic step to configure and run a TCP or UDP throughput measurement and publish the results.</Description>
+  <Dependencies>
+    <PackageDependency Package="SSH" />
+  </Dependencies>
+  <Files>
+    <File Path="Packages/Iperf/OpenTap.Plugins.Iperf.dll" SourcePath="OpenTap.Plugins.Iperf.dll">
+      <SetAssemblyInfo Attributes="Version"/>
+    </File>
+  </Files>
+</Package>
