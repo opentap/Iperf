@@ -21,9 +21,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("OpenTap.Plugins.Iperf")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Keysight")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("OpenTap.Plugins.Iperf")]
-[assembly: AssemblyCopyright("Copyright 2019-2020 Keysight Technologies")]
+[assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -44,10 +44,7 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("0.3.0.0")]
-[assembly: AssemblyFileVersion("0.3.0.0")]
-[assembly: AssemblyInformationalVersion("0.3.0")]
-
-// 0.1.0 Initial version
-// 0.2.0 Demoable content
-// 0.3.0 Prepared for open-source
+// [assembly: AssemblyVersion("1.0.*")]
+[assembly: AssemblyVersion("0.1.0.0")]
+[assembly: AssemblyFileVersion("0.1.0.0")]
+[assembly: AssemblyInformationalVersion("0.1.0-Development")]
