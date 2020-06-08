@@ -29,7 +29,7 @@ namespace OpenTap.Plugins.Iperf
         downlink
     }
 
-    [Display("IperfInstrument", Group: "OpenTap.Plugins.Iperf", Description: "Insert a description here")]
+    [Display("Iperf Instrument", Group: "Iperf", Description: "Create an instrument to control a Iperf3 client")]
     public class IperfInstrument : SshInstrument
     {
         #region Settings
