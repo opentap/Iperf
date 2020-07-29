@@ -8,6 +8,7 @@ $(GitVersion) - Gets the version from Git in the recommended format Major.Minor.
 -->
 <Package Name="Iperf" Version="$(GitVersion)" OS="Windows,Linux" Architecture="AnyCPU" xmlns="http://opentap.io/schemas/package">
   <Description>The tappackage contains an instrument that handles the connection to the Iperf client machine using a SSH connection. It also contains a basic step to configure and run a TCP or UDP throughput measurement and publish the results.</Description>
+  <SourceUrl>https://gitlab.com/OpenTAP/Plugins/keysight/iperf</SourceUrl>
   <Dependencies>
     <PackageDependency Package="SSH" />
   </Dependencies>
