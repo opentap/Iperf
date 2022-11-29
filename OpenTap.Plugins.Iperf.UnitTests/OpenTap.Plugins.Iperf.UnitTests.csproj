@@ -1,9 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
@@ -13,19 +9,12 @@
     <PackageReference Include="Nunit3TestAdapter" Version="3.12.0" />
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <!-- We are setting TargetFramework in debug configuration, otherwise Visual Studio tries to attach a .NET Core debugger. That will not work, because the program we open is a .NET Framework executable -->
-    <TargetFramework>net462</TargetFramework>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\OpenTap.Plugins.Iperf\OpenTap.Plugins.Iperf.csproj" />
   </ItemGroup>
   
   <ItemGroup>
-    <Reference Include="OpenTap">
-      <HintPath>$(TAP_PATH)/OpenTap.dll</HintPath>
-    </Reference>
+    <PackageReference Include="OpenTAP" Version="$(OpenTapVersion)" />
   </ItemGroup>
 
 </Project>

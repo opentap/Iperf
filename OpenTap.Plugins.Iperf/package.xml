@@ -8,11 +8,24 @@ $(GitVersion) - Gets the version from Git in the recommended format Major.Minor.
 -->
 <Package Name="Iperf" Version="$(GitVersion)" OS="Windows,Linux" Architecture="AnyCPU" xmlns="http://opentap.io/schemas/package">
   <Description>The tappackage contains an instrument that handles the connection to the Iperf client machine using a SSH connection. It also contains a basic step to configure and run a TCP or UDP throughput measurement and publish the results.</Description>
-  <SourceUrl>https://gitlab.com/OpenTAP/Plugins/keysight/iperf</SourceUrl>
+  <SourceUrl>https://github.com/opentap/Iperf</SourceUrl>
+  <SourceLicense>MIT</SourceLicense>
   <Dependencies>
     <PackageDependency Package="SSH" />
   </Dependencies>
   <Files>
+    <File Path="Packages/Iperf/iperf-3.1.3-win32/cyggcc_s-1.dll" SourcePath="Dependencies/Iperf/iperf-3.1.3-win32/cyggcc_s-1.dll"></File>
+    <File Path="Packages/Iperf/iperf-3.1.3-win32/cygwin1.dll" SourcePath="Dependencies/Iperf/iperf-3.1.3-win32/cygwin1.dll"></File>
+    <File Path="Packages/Iperf/iperf-3.1.3-win32/iperf3.exe" SourcePath="Dependencies/Iperf/iperf-3.1.3-win32/iperf3.exe"></File>
+    
+    <File Path="Packages/Iperf/iperf-3.1.3-win64/cygwin1.dll" SourcePath="Dependencies/Iperf/iperf-3.1.3-win64/cygwin1.dll"></File>
+    <File Path="Packages/Iperf/iperf-3.1.3-win64/iperf3.exe" SourcePath="Dependencies/Iperf/iperf-3.1.3-win64/iperf3.exe"></File>
+
+    <File Path="Packages/Iperf/Linux/iperf3_3.1.3" SourcePath="Dependencies/Iperf/Linux/iperf3_3.1.3"></File>
+    <File Path="Packages/Iperf/Linux/libiperf.so.0_3.1.3" SourcePath="Dependencies/Iperf/Linux/libiperf.so.0_3.1.3"></File>
+    
+    <File Path="Packages/Iperf/MacOS/iperf3" SourcePath="Dependencies/Iperf/MacOS/iperf3"></File>
+    
     <File Path="Packages/Iperf/OpenTap.Plugins.Iperf.dll" SourcePath="OpenTap.Plugins.Iperf.dll">
       <SetAssemblyInfo Attributes="Version"/>
     </File>
