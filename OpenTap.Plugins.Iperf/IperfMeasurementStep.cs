@@ -25,11 +25,11 @@ namespace OpenTap.Plugins.Iperf
     [Display("Iperf Measurement", Group: "Iperf", Description: "Configure and execute a Iperf client locally or remote")]
     public class IperfMeasurementStep : TestStep
     {
-        [Display("User remote Iperf over SSH")]
+        [Display("Use Remote", Description = "Use remote Iperf over SSH", Group: "SSH")]
         public bool Remote { get; set; }
 
         [EnabledIf(nameof(Remote), HideIfDisabled = true)]
-        [Display("Iperf Instrument", Group: "Instrument")]
+        [Display("SSH Resource", Group: "SSH")]
         public SshInstrument IperfInstrument { get; set; }
 
         [Display(Name: "Iperf Server", Group: "Iperf Test Settings")]
