@@ -18,7 +18,7 @@ public class LocalIperfHelper
     
     string getIperfLocation()
     {
-        var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        var location = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
         
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             location += "/Packages/Iperf/Linux/iperf3_3.1.3";

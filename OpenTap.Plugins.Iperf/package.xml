@@ -6,7 +6,7 @@ Version: The version of the package. Must be in a semver 2.0 compatible format. 
 For Version the following macro is available (Only works if the project directory is under Git source control):
 $(GitVersion) - Gets the version from Git in the recommended format Major.Minor.Build-PreRelease+CommitHash.BranchName.
 -->
-<Package Name="Iperf" Version="$(GitVersion)" OS="Windows,Linux" Architecture="AnyCPU" xmlns="http://opentap.io/schemas/package">
+<Package Name="Iperf" Version="$(GitVersion)" OS="Windows,Linux,MacOS" Architecture="AnyCPU" xmlns="http://opentap.io/schemas/package">
   <Description>Measurements of achievable bandwidth on IP networks using iPerf. Configuration of iPerf server and control of local or remote iPerf clients.</Description>
   <SourceUrl>https://github.com/opentap/Iperf</SourceUrl>
   <SourceLicense>MIT</SourceLicense>
