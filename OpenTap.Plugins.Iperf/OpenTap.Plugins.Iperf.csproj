@@ -8,34 +8,34 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Packages\Iperf\iperf-3.1.3-win32\cyggcc_s-1.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Packages\Iperf\iperf-3.1.3-win32\cygwin1.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Packages\Iperf\iperf-3.1.3-win32\iperf3.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Packages\Iperf\iperf-3.1.3-win64\cygwin1.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Packages\Iperf\iperf-3.1.3-win64\iperf3.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Packages\Iperf\Linux\iperf3_3.1.3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Packages\Iperf\Linux\libiperf.so.0_3.1.3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Packages\Iperf\MacOS\iperf3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Folder Include="Dependencies" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Packages" />
+    <None Update="Dependencies\Iperf\iperf-3.1.3-win32\cyggcc_s-1.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Dependencies\Iperf\iperf-3.1.3-win32\cygwin1.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Dependencies\Iperf\iperf-3.1.3-win32\iperf3.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Dependencies\Iperf\iperf-3.1.3-win64\cygwin1.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Dependencies\Iperf\Linux\iperf3_3.1.3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Dependencies\Iperf\Linux\libiperf.so.0_3.1.3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Dependencies\Iperf\iperf-3.1.3-win64\iperf3.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Dependencies\Iperf\MacOS\iperf3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
