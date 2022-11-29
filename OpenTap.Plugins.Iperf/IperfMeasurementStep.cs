@@ -22,29 +22,29 @@ namespace OpenTap.Plugins.Iperf
         downlink
     }
 
-    [Display("Iperf Measurement", Group: "Iperf", Description: "Configure and execute a Iperf client locally or remote")]
+    [Display("iPerf Measurement", Group: "iPerf", Description: "Configure and execute a iPerf client locally or remote")]
     public class IperfMeasurementStep : TestStep
     {
-        [Display("Use Remote", Description = "Use remote Iperf over SSH", Group: "SSH")]
+        [Display("Use Remote", Description = "Use remote iPerf over SSH", Group: "SSH")]
         public bool Remote { get; set; }
 
         [EnabledIf(nameof(Remote), HideIfDisabled = true)]
         [Display("SSH Resource", Group: "SSH")]
         public SshInstrument IperfInstrument { get; set; }
 
-        [Display(Name: "Iperf Server", Group: "Iperf Test Settings")]
+        [Display(Name: "Iperf Server", Group: "iPerf Test Settings")]
         public string IperfServer { get; set; }
 
-        [Display(Name: "Protocol", Group: "Iperf Test Settings")]
+        [Display(Name: "Protocol", Group: "iPerf Test Settings")]
         public Protocol Protocol { get; set; }
 
-        [Display(Name: "Direction", Group: "Iperf Test Settings")]
+        [Display(Name: "Direction", Group: "iPerf Test Settings")]
         public Direction Direction { get; set; }
 
-        [Display(Name: "Target Bandwidth", Description: "bits per second - 0 Unlimited for TCP and 1Mbps for UDP", Group: "Iperf Test Settings")]
+        [Display(Name: "Target Bandwidth", Description: "bits per second - 0 Unlimited for TCP and 1Mbps for UDP", Group: "iPerf Test Settings")]
         public int Bandwidth { get; set; }
 
-        [Display(Name: "Test Duration", Description: "in seconds", Group: "Iperf Test Settings")]
+        [Display(Name: "Test Duration", Description: "in seconds", Group: "iPerf Test Settings")]
         public int TestDuration { get; set; }
 
         /// <summary>

@@ -2,7 +2,7 @@ using System.Text;
 
 namespace OpenTap.Plugins.Iperf;
 
-[Display("Iperf Server", Group: "Iperf", Description: "Configure and execute a Iperf server")]
+[Display("iPerf Server", Group: "iPerf", Description: "Configure and execute a iPerf server")]
 public class IperfServerStep : TestStep
 {
     [Display("Port", Description: "Server port to listen on.")]
