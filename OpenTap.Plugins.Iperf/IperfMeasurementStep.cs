@@ -52,7 +52,7 @@ namespace OpenTap.Plugins.Iperf
         /// </summary>
         public IperfMeasurementStep()
         {
-            IperfServer = "192.168.11.111";
+            IperfServer = "iperf.par2.as49434.net";
             Protocol = Protocol.tcp;
             Direction = Direction.downlink;
             Bandwidth = 0;
