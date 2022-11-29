@@ -1,37 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <RootNamespace>OpenTap.Plugins.Iperf</RootNamespace>
-    <AssemblyName>OpenTap.Plugins.Iperf</AssemblyName>
-    <DefineConstants>NET_STANDARD</DefineConstants>
-    <OpenTapPackageDefinitionPath>package.xml</OpenTapPackageDefinitionPath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <!-- We are setting TargetFramework in debug configuration, otherwise Visual Studio tries to attach a .NET Core debugger. That will not work, because the program we open is a .NET Framework executable -->
-    <TargetFramework>net462</TargetFramework>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <OutputPath>bin/Release</OutputPath>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="SSH.NET" Version="2016.0.0" />
+    <PackageReference Include="OpenTAP" Version="$(OpenTapVersion)" />
+    <OpenTapPackageReference Include="SSH" Repository="packages.opentap.io" Version="any" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SSH.NET" Version="2016.0.0" />
-    <PackageReference Include="OpenTAP" Version="9.8.0" />
-    <OpenTapPackageReference Include="SSH" Repository="packages.opentap.io"/>
+    <None Update="Packages\Iperf\iperf-3.1.3-win32\cyggcc_s-1.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Packages\Iperf\iperf-3.1.3-win32\cygwin1.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Packages\Iperf\iperf-3.1.3-win32\iperf3.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Packages\Iperf\iperf-3.1.3-win64\cygwin1.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Packages\Iperf\iperf-3.1.3-win64\iperf3.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Packages\Iperf\Linux\iperf3_3.1.3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Packages\Iperf\Linux\libiperf.so.0_3.1.3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Packages\Iperf\MacOS\iperf3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Packages" />
   </ItemGroup>
 
 </Project>

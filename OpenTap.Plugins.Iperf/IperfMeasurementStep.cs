@@ -1,43 +1,51 @@
-﻿//Copyright 2019-2020 Keysight Technologies
-//
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-//
-//http://www.apache.org/licenses/LICENSE-2.0
-//
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OpenTap.Plugins.Ssh;
+using Renci.SshNet;
 
 namespace OpenTap.Plugins.Iperf
 {
-    [Display("Iperf Measurement", Group: "Iperf", Description: "Configure and execute a test to be executed using the Iperf instrument")]
+    public enum Protocol
+    {
+        tcp,
+        udp
+    }
+
+    public enum Direction
+    {
+        uplink,
+        downlink
+    }
+
+    [Display("Iperf Measurement", Group: "Iperf", Description: "Configure and execute a Iperf client locally or remote")]
     public class IperfMeasurementStep : TestStep
     {
-        #region Settings
-        [Display("Iperf Instrument",Group:"Instrument")]
-        public IperfInstrument IperfInstrument {get;set;}
+        [Display("User remote Iperf over SSH")]
+        public bool Remote { get; set; }
 
-        [Display(Name:"Iperf Server",Group:"Iperf Test Settings")]
+        [EnabledIf(nameof(Remote), HideIfDisabled = true)]
+        [Display("Iperf Instrument", Group: "Instrument")]
+        public SshInstrument IperfInstrument { get; set; }
+
+        [Display(Name: "Iperf Server", Group: "Iperf Test Settings")]
         public string IperfServer { get; set; }
+
         [Display(Name: "Protocol", Group: "Iperf Test Settings")]
         public Protocol Protocol { get; set; }
+
         [Display(Name: "Direction", Group: "Iperf Test Settings")]
         public Direction Direction { get; set; }
 
         [Display(Name: "Target Bandwidth", Description: "bits per second - 0 Unlimited for TCP and 1Mbps for UDP", Group: "Iperf Test Settings")]
         public int Bandwidth { get; set; }
-        [Display(Name: "Test Duration", Description:"in seconds", Group: "Iperf Test Settings")]
-        public int TestDuration { get; set; }
 
-        #endregion
+        [Display(Name: "Test Duration", Description: "in seconds", Group: "Iperf Test Settings")]
+        public int TestDuration { get; set; }
 
         /// <summary>
         /// Creates a new instance of <see cref="IperfMeasurementStep">IperfMeasurementStep</see> class.
@@ -57,92 +65,134 @@ namespace OpenTap.Plugins.Iperf
         public override void Run()
         {
             // Create iperf config
-            StringBuilder sb = new StringBuilder($"iperf3 --client {IperfServer}");
-            sb.Append($" --time {TestDuration}");
-            if(Protocol == Protocol.udp)
-            {
-                sb.Append(" --udp");
-            }
-            if(Bandwidth != 0)
-            {
-                sb.Append($" --bandwidth {Bandwidth}");
-            }
-            if(Direction == Direction.uplink)
-            {
-                sb.Append(" --reverse");
-            }
-
+            StringBuilder command = new StringBuilder($"--client {IperfServer}");
+            command.Append($" --time {TestDuration}");
+            if (Protocol == Protocol.udp)
+                command.Append(" --udp");
+            if (Bandwidth != 0)
+                command.Append($" --bandwidth {Bandwidth}");
+            if (Direction == Direction.uplink)
+                command.Append(" --reverse");
             // get output as json
-            sb.Append(" --json");
+            command.Append(" --json");
 
-            // Run the test
-            var command = IperfInstrument.SshClient.RunCommand(sb.ToString());
-            if(command.ExitStatus == 0)
+            bool success = false;
+            string result = "";
+            if (Remote)
             {
-                // Print output in the log
-                //foreach(var line in command.Result.Trim().Split('\n'))
-                //{
-                //    Log.Info(line);
-                //}
-
-                JObject result = JObject.Parse(command.Result);
-
-                string executionId = (string)result["start"]["cookie"];
-
-                List<string> keys = new List<string> {
-                    "testexecid",
-                    "protocol",
-                    "duration",
-                    "reverse",
-                    "bits_per_second",
-                    "retransmits_lost_packets",
-                    "timesecs" };
-
-                List<string> testexecid = new List<string>();
-                List<string> protocol = new List<string>();
-                List<string> duration = new List<string>();
-                List<string> reverse = new List<string>();
-                List<string> bits_per_second = new List<string>();
-                List<string> retransmits_lost_packets = new List<string>();
-                List<string> timestamp = new List<string>();
-
-                testexecid.Add(executionId);
-                protocol.Add((string)result["start"]["test_start"]["protocol"]);
-                duration.Add((string)result["start"]["test_start"]["duration"]);
-                reverse.Add((string)result["start"]["test_start"]["reverse"]);
-                if(Protocol == Protocol.udp)
+            
+                // Run remote
+                var commandResult = IperfInstrument.SshClient.RunCommand("iperf3 " + command.ToString());
+                if (commandResult.ExitStatus == 0)
                 {
-                    retransmits_lost_packets.Add((string)result["end"]["sum"]["lost_packets"]);
-                    bits_per_second.Add((string)result["end"]["sum"]["bits_per_second"]);
-                    Log.Info($"Bitrate: {(string)result["end"]["sum"]["bits_per_second"]}");
+                    success = true;
+                    result = commandResult.Result;
                 }
                 else
-                {
-                    retransmits_lost_packets.Add((string)result["end"]["sum_sent"]["retransmits"]);
-                    bits_per_second.Add((string)result["end"]["streams"][0]["receiver"]["bits_per_second"]);
-                    Log.Info($"Bitrate: {(string)result["end"]["sum_received"]["bits_per_second"]}");
-                }
-                timestamp.Add((string)result["start"]["timestamp"]["timesecs"]);
-
-                // Publish results for result listener
-                Results.PublishTable(
-                    executionId,
-                    keys,
-                    testexecid.ToArray(),
-                    protocol.ToArray(),
-                    duration.ToArray(),
-                    reverse.ToArray(),
-                    bits_per_second.ToArray(),
-                    retransmits_lost_packets.ToArray(),
-                    timestamp.ToArray() );
-
+                    result = commandResult.Error;
+            }
+            else
+            {
+                // Run locally
+                var process = new LocalIperfHelper();
+                (success, result) = process.RunCommand(command.ToString());
+            }
+            
+            if (success)
+            {
+                ParseIperfOutput(result);
                 UpgradeVerdict(Verdict.Pass);
             }
             else
             {
-                Log.Warning(command.Error);
+                Log.Warning(result);
                 UpgradeVerdict(Verdict.Fail);
             }
+        }
+
+        private void ParseIperfOutput(string result)
+        {
+            JObject json = JObject.Parse(result);
+            string executionId = (string)json["start"]["cookie"];
+            List<string> keys = new List<string>
+            {
+                "testexecid",
+                "protocol",
+                "duration",
+                "reverse",
+                "bits_per_second",
+                "retransmits_lost_packets",
+                "timesecs"
+            };
+
+            List<string> testexecid = new List<string>();
+            List<string> protocol = new List<string>();
+            List<string> duration = new List<string>();
+            List<string> reverse = new List<string>();
+            List<string> bits_per_second = new List<string>();
+            List<string> retransmits_lost_packets = new List<string>();
+            List<string> timestamp = new List<string>();
+
+            testexecid.Add(executionId);
+            protocol.Add((string)json["start"]["test_start"]["protocol"]);
+            duration.Add((string)json["start"]["test_start"]["duration"]);
+            reverse.Add((string)json["start"]["test_start"]["reverse"]);
+            if (Protocol == Protocol.udp)
+            {
+                retransmits_lost_packets.Add((string)json["end"]["sum"]["lost_packets"]);
+                bits_per_second.Add((string)json["end"]["sum"]["bits_per_second"]);
+            }
+            else
+            {
+                retransmits_lost_packets.Add((string)json["end"]["sum_sent"]["retransmits"]);
+                bits_per_second.Add((string)json["end"]["streams"][0]["receiver"]["bits_per_second"]);
+            }
+
+            timestamp.Add((string)json["start"]["timestamp"]["timesecs"]);
+
+            // Publish results for result listener
+            Results.PublishTable(
+                executionId,
+                keys,
+                testexecid.ToArray(),
+                protocol.ToArray(),
+                duration.ToArray(),
+                reverse.ToArray(),
+                bits_per_second.ToArray(),
+                retransmits_lost_packets.ToArray(),
+                timestamp.ToArray());
+
+            string format(object input, bool bytes)
+            {
+                if (input == null)
+                    return "";
+                if (double.TryParse(input.ToString(), out var value) == false)
+                    return "";
+
+                if (bytes)
+                {
+                    return value switch
+                    {
+                        > 1_073_741_824 => $"{value / 1_073_741_824:F} GBytes",
+                        > 1_048_576 => $"{value / 1_048_576:F} MBytes",
+                        > 1024 => $"{value / 1024:F} KBytes",
+                        _ => "Bytes"
+                    };    
+                }
+                else
+                {
+                    return value switch
+                    {
+                        > 1_000_000_000 => $"{value / 1_000_000_000:F} GBits/sec",
+                        > 1_000_000 => $"{value / 1_000_000:F} MBits/sec",
+                        > 1000 => $"{value / 1000:F} KBits/sec",
+                        _ => "bits/sec"
+                    };    
+                }
+            }
+            
+            Log.Info($"Transfer: {format(json["end"]?["sum_sent"]?["bytes"], true)}   Bandwidth: {format(json["end"]?["sum_sent"]?["bits_per_second"], false)}  Direction: sender");
+            Log.Info($"Transfer: {format(json["end"]?["sum_received"]?["bytes"], true)}   Bandwidth: {format(json["end"]?["sum_received"]?["bits_per_second"], false)}  Direction: receiver");
         }
     }
 }
