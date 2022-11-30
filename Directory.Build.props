@@ -9,7 +9,7 @@
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
 
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
 
     <OutputPath>$(MSBuildThisFileDirectory)bin\$(Configuration)</OutputPath>
   </PropertyGroup>
