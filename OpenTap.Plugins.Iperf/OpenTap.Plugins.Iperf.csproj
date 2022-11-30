@@ -4,7 +4,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="SSH.NET" Version="2016.0.0" />
     <PackageReference Include="OpenTAP" Version="$(OpenTapVersion)" />
-    <OpenTapPackageReference Include="SSH" Repository="packages.opentap.io" Version="any" />
+    <OpenTapPackageReference Include="SSH" Repository="packages.opentap.io" Version="1.0.0-beta.2+65d8cf63" />
   </ItemGroup>
 
   <ItemGroup>
