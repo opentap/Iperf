@@ -20,14 +20,14 @@ public class LocalIperfHelper
     {
         var location = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
         
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && RuntimeInformation.ProcessArchitecture == Architecture.X64)
             location += "/Packages/Iperf/Linux/iperf3_3.1.3";
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             location += RuntimeInformation.ProcessArchitecture == Architecture.X64 ? "/Packages/Iperf/iperf-3.1.3-win64/iperf3.exe" : "/Packages/Iperf/iperf-3.1.3-win32/iperf3.exe";
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             location += "/Packages/Iperf/MacOS/iperf3";
         else
-            location += new PlatformNotSupportedException("Iperf is not supported on this platform.");
+            location = "iperf3";
 
         return location;
     }
@@ -122,7 +122,15 @@ public class LocalIperfHelper
             process.OutputDataReceived += OutputDataRecv;
             process.ErrorDataReceived += ErrorDataRecv;
 
-            process.Start();
+            try
+            {
+                process.Start();
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+                Console.WriteLine(e);
+            }
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
             
