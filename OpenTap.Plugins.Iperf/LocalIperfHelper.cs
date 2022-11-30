@@ -74,14 +74,14 @@ public class LocalIperfHelper
     {
         // Setup local iperf process
         output = new StringBuilder();
-        var app = Path.GetFullPath(getIperfLocation());
+        var app = getIperfLocation();
         var process = new Process
         {
             StartInfo =
             {
                 FileName = app,
                 Arguments = command,
-                WorkingDirectory = Path.GetDirectoryName(app) ?? Directory.GetCurrentDirectory(),
+                WorkingDirectory = Directory.GetCurrentDirectory(),
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
