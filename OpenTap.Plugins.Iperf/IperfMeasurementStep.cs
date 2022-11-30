@@ -176,7 +176,7 @@ namespace OpenTap.Plugins.Iperf
                         > 1_073_741_824 => $"{value / 1_073_741_824:F} GBytes",
                         > 1_048_576 => $"{value / 1_048_576:F} MBytes",
                         > 1024 => $"{value / 1024:F} KBytes",
-                        _ => "Bytes"
+                        _ => $"{value} Bytes"
                     };    
                 }
                 else
@@ -186,7 +186,7 @@ namespace OpenTap.Plugins.Iperf
                         > 1_000_000_000 => $"{value / 1_000_000_000:F} GBits/sec",
                         > 1_000_000 => $"{value / 1_000_000:F} MBits/sec",
                         > 1000 => $"{value / 1000:F} KBits/sec",
-                        _ => "bits/sec"
+                        _ => $"{value} bits/sec"
                     };    
                 }
             }
