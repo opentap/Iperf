@@ -20,9 +20,7 @@ public class LocalIperfHelper
     {
         var location = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
         
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && RuntimeInformation.ProcessArchitecture == Architecture.X64)
-            location += "/Packages/Iperf/Linux/iperf3_3.1.3";
-        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             location += RuntimeInformation.ProcessArchitecture == Architecture.X64 ? "/Packages/Iperf/iperf-3.1.3-win64/iperf3.exe" : "/Packages/Iperf/iperf-3.1.3-win32/iperf3.exe";
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             location += "/Packages/Iperf/MacOS/iperf3";
