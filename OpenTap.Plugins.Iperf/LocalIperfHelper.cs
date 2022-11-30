@@ -39,7 +39,6 @@ public class LocalIperfHelper
             }
             else
             {
-                log.Info(e.Data);
                 lock(output)
                     output.AppendLine(e.Data);
             }
@@ -58,7 +57,6 @@ public class LocalIperfHelper
             }
             else
             {
-                log.Error(e.Data);
                 lock(output)
                     output.AppendLine(e.Data);
             }

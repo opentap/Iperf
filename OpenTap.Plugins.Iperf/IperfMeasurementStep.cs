@@ -105,7 +105,7 @@ namespace OpenTap.Plugins.Iperf
             }
             else
             {
-                Log.Warning(result);
+                Log.Error(result);
                 UpgradeVerdict(Verdict.Fail);
             }
         }
