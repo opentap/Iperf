@@ -26,7 +26,7 @@ public class IperfServerStep : TestStep
             command.Append(" --one-off");
         
         var process = new LocalIperfHelper();
-        var (success, result) = process.RunCommand(command.ToString());
+        var (success, result) = process.RunCommand(command.ToString(), true);
         
         if (success)
             UpgradeVerdict(Verdict.Pass);

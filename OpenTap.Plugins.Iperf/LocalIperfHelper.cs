@@ -9,11 +9,24 @@ using System.Threading;
 
 namespace OpenTap.Plugins.Iperf;
 
+public enum Protocol
+{
+    tcp,
+    udp
+}
+
+public enum Direction
+{
+    uplink,
+    downlink
+}
+
 public class LocalIperfHelper
 {
     private ManualResetEvent outputWaitHandle;
     private ManualResetEvent errorWaitHandle;
     private StringBuilder output;
+    private bool printToLog;
     private TraceSource log = Log.CreateSource(nameof(LocalIperfHelper));
     
     string getIperfLocation()
@@ -39,6 +52,9 @@ public class LocalIperfHelper
             }
             else
             {
+                if (printToLog)
+                    log.Info(e.Data);
+                
                 lock(output)
                     output.AppendLine(e.Data);
             }
@@ -57,6 +73,9 @@ public class LocalIperfHelper
             }
             else
             {
+                if (printToLog)
+                    log.Error(e.Data);
+                
                 lock(output)
                     output.AppendLine(e.Data);
             }
@@ -66,10 +85,11 @@ public class LocalIperfHelper
         }
     }
     
-    public (bool success, string result) RunCommand(string command)
+    public (bool success, string result) RunCommand(string command, bool printToLog)
     {
         // Setup local iperf process
         output = new StringBuilder();
+        this.printToLog = printToLog;
         var app = getIperfLocation();
         var process = new Process
         {
