@@ -137,11 +137,11 @@ public class IperfMeasurementStep : TestStep
         
         var measurements = ((JArray) json["intervals"])?.Select(x => x["sum"])?.Select(x =>
             new {
-                Start = (double)x["start"],
-                Duration = (double)x["seconds"],
-                Bytes = (int)x["bytes"],
-                BitsPerSecond = (double) x["bits_per_second"],
-                Retransmits = (double)x["retransmits"]
+                Start = (double)(x["start"] ?? 0.0),
+                Duration = (double)(x["seconds"] ?? 0.0),
+                Bytes = (int)(x["bytes"] ?? 0),
+                BitsPerSecond = (double) (x["bits_per_second"]?? 0.0),
+                Retransmits = (double)(x["retransmits"] ?? 0)
             }).ToArray();
         if (measurements != null)
         {
@@ -157,9 +157,9 @@ public class IperfMeasurementStep : TestStep
         {
             var sentResult = new
             {
-                MegaBytes = ((double) sent["bytes"]) / (1024 * 1024),
-                MBitsPerSecond = ((double) sent["bits_per_second"]) / 1_000_000,
-                Duration = (double) sent["seconds"],
+                MegaBytes = ((double) (sent["bytes"] ?? 0)) / (1024 * 1024),
+                MBitsPerSecond = ((double) (sent["bits_per_second"] ?? 0)) / 1_000_000,
+                Duration = (double) (sent["seconds"] ?? 0.0),
                 Protocol = protocol.FirstOrDefault()
             };
             Results.Publish("Sent", sentResult);
@@ -169,9 +169,9 @@ public class IperfMeasurementStep : TestStep
         {
             var receivedResult = new
             {
-                MegaBytes = ((double) received["bytes"]) / (1024 * 1024),
-                MBitsPerSecond = ((double) received["bits_per_second"]) / 1_000_000,
-                Duration = (double) received["seconds"],
+                MegaBytes = ((double) (received["bytes"] ?? 0)) / (1024 * 1024),
+                MBitsPerSecond = ((double) (received["bits_per_second"] ?? 0)) / 1_000_000,
+                Duration = (double) (received["seconds"] ?? 0.0),
                 Protocol = protocol.FirstOrDefault()
             };
             Results.Publish("Received", receivedResult);
