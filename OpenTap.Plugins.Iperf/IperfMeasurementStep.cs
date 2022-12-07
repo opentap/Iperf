@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using OpenTap.Plugins.Ssh;
@@ -133,8 +134,22 @@ public class IperfMeasurementStep : TestStep
 
         timestamp.Add((string)json["start"]["timestamp"]["timesecs"]);
 
+        
+        var measurements = ((JArray) json["intervals"]).Select(x => x["sum"]).Select(x =>
+            new {
+                Start = (double)x["start"],
+                Duration = (double)x["seconds"],
+                Bytes = (int)x["bytes"],
+                BitsPerSecond = (double) x["bits_per_second"],
+                Retransmits = (double)x["retransmits"]
+            }).ToArray();
+        foreach (var meas in measurements)
+        {
+            Results.Publish("Perf", meas);
+        }
+        
         // Publish results for result listener
-        Results.PublishTable(
+        /*Results.PublishTable(
             executionId,
             keys,
             testexecid.ToArray(),
@@ -143,38 +158,60 @@ public class IperfMeasurementStep : TestStep
             reverse.ToArray(),
             bits_per_second.ToArray(),
             retransmits_lost_packets.ToArray(),
-            timestamp.ToArray());
+            timestamp.ToArray());*/
 
-        string format(object input, bool bytes)
+        var end = json["end"];
+        var sent = end["sum_sent"];
+        var received = end["sum_received"];
+        var sentResult = new
         {
-            if (input == null)
-                return "";
-            if (double.TryParse(input.ToString(), out var value) == false)
-                return "";
-
-            if (bytes)
-            {
-                return value switch
-                {
-                    > 1_073_741_824 => $"{value / 1_073_741_824:F} GBytes",
-                    > 1_048_576 => $"{value / 1_048_576:F} MBytes",
-                    > 1024 => $"{value / 1024:F} KBytes",
-                    _ => $"{value} Bytes"
-                };    
-            }
-            else
-            {
-                return value switch
-                {
-                    > 1_000_000_000 => $"{value / 1_000_000_000:F} GBits/sec",
-                    > 1_000_000 => $"{value / 1_000_000:F} MBits/sec",
-                    > 1000 => $"{value / 1000:F} KBits/sec",
-                    _ => $"{value} bits/sec"
-                };    
-            }
-        }
+            MegaBytes = ((double) sent["bytes"]) / (1024 * 1024),
+            MBitsPerSecond = ((double) sent["bits_per_second"]) / 1_000_000,
+            Duration = (double) sent["seconds"],
+            Protocol = protocol.FirstOrDefault()
+        };
+        var receivedResult = new
+        {
+            MegaBytes = ((double) received["bytes"]) / (1024 * 1024),
+            MBitsPerSecond = ((double) received["bits_per_second"] ) / 1_000_000,
+            Duration = (double) received["seconds"],
+            Protocol = protocol.FirstOrDefault()
+        };
+        
+        Results.Publish("Sent", sentResult);
+        Results.Publish("Received", receivedResult);
         
         Log.Info($"Transfer: {format(json["end"]?["sum_sent"]?["bytes"], true)}   Bandwidth: {format(json["end"]?["sum_sent"]?["bits_per_second"], false)}  Direction: sender");
         Log.Info($"Transfer: {format(json["end"]?["sum_received"]?["bytes"], true)}   Bandwidth: {format(json["end"]?["sum_received"]?["bits_per_second"], false)}  Direction: receiver");
+        
+        
+    }
+    static string format(object input, bool bytes)
+    {
+        if (input == null)
+            return "";
+        if (double.TryParse(input.ToString(), out var value) == false)
+            return "";
+
+        if (bytes)
+        {
+            return value switch
+            {
+                > 1_073_741_824 => $"{value / 1_073_741_824:F} GBytes",
+                > 1_048_576 => $"{value / 1_048_576:F} MBytes",
+                > 1024 => $"{value / 1024:F} KBytes",
+                _ => $"{value} Bytes"
+            };    
+        }
+        else
+        {
+            return value switch
+            {
+                > 1_000_000_000 => $"{value / 1_000_000_000:F} GBits/sec",
+                > 1_000_000 => $"{value / 1_000_000:F} MBits/sec",
+                > 1000 => $"{value / 1000:F} KBits/sec",
+                _ => $"{value} bits/sec"
+            };    
+        }
     }
 }
