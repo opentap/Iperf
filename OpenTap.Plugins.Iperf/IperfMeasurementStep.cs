@@ -135,51 +135,50 @@ public class IperfMeasurementStep : TestStep
         timestamp.Add((string)json["start"]["timestamp"]["timesecs"]);
 
         
-        var measurements = ((JArray) json["intervals"]).Select(x => x["sum"]).Select(x =>
+        var measurements = ((JArray) json["intervals"])?.Select(x => x["sum"])?.Select(x =>
             new {
-                Start = (double)x["start"],
-                Duration = (double)x["seconds"],
-                Bytes = (int)x["bytes"],
-                BitsPerSecond = (double) x["bits_per_second"],
-                Retransmits = (double)x["retransmits"]
+                Start = (double)(x["start"] ?? 0.0),
+                Duration = (double)(x["seconds"] ?? 0.0),
+                Bytes = (int)(x["bytes"] ?? 0),
+                BitsPerSecond = (double) (x["bits_per_second"]?? 0.0),
+                Retransmits = (double)(x["retransmits"] ?? 0)
             }).ToArray();
-        foreach (var meas in measurements)
+        if (measurements != null)
         {
-            Results.Publish("Perf", meas);
+            foreach (var meas in measurements)
+            {
+                Results.Publish("Perf", meas);
+            }
         }
-        
-        // Publish results for result listener
-        /*Results.PublishTable(
-            executionId,
-            keys,
-            testexecid.ToArray(),
-            protocol.ToArray(),
-            duration.ToArray(),
-            reverse.ToArray(),
-            bits_per_second.ToArray(),
-            retransmits_lost_packets.ToArray(),
-            timestamp.ToArray());*/
-
         var end = json["end"];
         var sent = end["sum_sent"];
         var received = end["sum_received"];
-        var sentResult = new
+        if (sent != null)
         {
-            MegaBytes = ((double) sent["bytes"]) / (1024 * 1024),
-            MBitsPerSecond = ((double) sent["bits_per_second"]) / 1_000_000,
-            Duration = (double) sent["seconds"],
-            Protocol = protocol.FirstOrDefault()
-        };
-        var receivedResult = new
+            var sentResult = new
+            {
+                MegaBytes = ((double) (sent["bytes"] ?? 0)) / (1024 * 1024),
+                MBitsPerSecond = ((double) (sent["bits_per_second"] ?? 0)) / 1_000_000,
+                Duration = (double) (sent["seconds"] ?? 0.0),
+                Protocol = protocol.FirstOrDefault()
+            };
+            Results.Publish("Sent", sentResult);
+        }
+
+        if (received != null)
         {
-            MegaBytes = ((double) received["bytes"]) / (1024 * 1024),
-            MBitsPerSecond = ((double) received["bits_per_second"] ) / 1_000_000,
-            Duration = (double) received["seconds"],
-            Protocol = protocol.FirstOrDefault()
-        };
+            var receivedResult = new
+            {
+                MegaBytes = ((double) (received["bytes"] ?? 0)) / (1024 * 1024),
+                MBitsPerSecond = ((double) (received["bits_per_second"] ?? 0)) / 1_000_000,
+                Duration = (double) (received["seconds"] ?? 0.0),
+                Protocol = protocol.FirstOrDefault()
+            };
+            Results.Publish("Received", receivedResult);
+        }
+
         
-        Results.Publish("Sent", sentResult);
-        Results.Publish("Received", receivedResult);
+        
         
         Log.Info($"Transfer: {format(json["end"]?["sum_sent"]?["bytes"], true)}   Bandwidth: {format(json["end"]?["sum_sent"]?["bits_per_second"], false)}  Direction: sender");
         Log.Info($"Transfer: {format(json["end"]?["sum_received"]?["bytes"], true)}   Bandwidth: {format(json["end"]?["sum_received"]?["bits_per_second"], false)}  Direction: receiver");
