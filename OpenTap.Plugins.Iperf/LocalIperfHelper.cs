@@ -144,7 +144,6 @@ public class LocalIperfHelper
             catch (Exception e)
             {
                 log.Error(e);
-                Console.WriteLine(e);
             }
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
