@@ -14,26 +14,26 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dependencies" />
+    <Folder Include="Packages" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Dependencies\Iperf\iperf-3.1.3-win32\cyggcc_s-1.dll">
+    <None Update="Packages\Iperf\iperf-3.1.3-win32\cyggcc_s-1.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Dependencies\Iperf\iperf-3.1.3-win32\cygwin1.dll">
+    <None Update="Packages\Iperf\iperf-3.1.3-win32\cygwin1.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Dependencies\Iperf\iperf-3.1.3-win32\iperf3.exe">
+    <None Update="Packages\Iperf\iperf-3.1.3-win32\iperf3.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Dependencies\Iperf\iperf-3.1.3-win64\cygwin1.dll">
+    <None Update="Packages\Iperf\iperf-3.1.3-win64\cygwin1.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Dependencies\Iperf\iperf-3.1.3-win64\iperf3.exe">
+    <None Update="Packages\Iperf\iperf-3.1.3-win64\iperf3.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Dependencies\Iperf\MacOS\iperf3">
+    <None Update="Packages\Iperf\MacOS\iperf3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
