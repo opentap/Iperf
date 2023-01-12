@@ -89,7 +89,11 @@ public class IperfMeasurementStep : TestStep
         }
         else
         {
-            Log.Error(result);
+            Log.Debug(result);
+
+            JObject json = JObject.Parse(result);
+            Log.Error(json["error"]?.Value<string>() ?? "Something went wrong calling Iperf3");
+            
             UpgradeVerdict(Verdict.Fail);
         }
     }
