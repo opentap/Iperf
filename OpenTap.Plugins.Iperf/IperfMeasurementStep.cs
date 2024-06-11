@@ -19,6 +19,9 @@ public class IperfMeasurementStep : TestStep
     [Display(Name: "Iperf Server", Group: "iPerf Test Settings")]
     public string IperfServer { get; set; }
 
+    [Display(Name: "Port", Group: "iPerf Test Settings")]
+    public int Port { get; set; }
+
     [Display(Name: "Protocol", Group: "iPerf Test Settings")]
     public Protocol Protocol { get; set; }
 
@@ -30,6 +33,8 @@ public class IperfMeasurementStep : TestStep
 
     [Display(Name: "Test Duration", Description: "in seconds", Group: "iPerf Test Settings")]
     public int TestDuration { get; set; }
+    
+    
 
     /// <summary>
     /// Creates a new instance of <see cref="IperfMeasurementStep">IperfMeasurementStep</see> class.
@@ -37,6 +42,7 @@ public class IperfMeasurementStep : TestStep
     public IperfMeasurementStep()
     {
         IperfServer = "iperf.par2.as49434.net";
+        Port = 5201;
         Protocol = Protocol.tcp;
         Direction = Direction.downlink;
         Bandwidth = 0;
@@ -50,6 +56,7 @@ public class IperfMeasurementStep : TestStep
     {
         // Create iperf config
         StringBuilder command = new StringBuilder($"--client {IperfServer}");
+        command.Append($" --port {Port}");
         command.Append($" --time {TestDuration}");
         if (Protocol == Protocol.udp)
             command.Append(" --udp");
@@ -139,11 +146,11 @@ public class IperfMeasurementStep : TestStep
         timestamp.Add((string)json["start"]["timestamp"]["timesecs"]);
 
         
-        var measurements = ((JArray) json["intervals"])?.Select(x => x["sum"])?.Select(x =>
+        var measurements = ((JArray) json["intervals"])?.Select(x => x["sum"]).Select(x =>
             new {
                 Start = (double)(x["start"] ?? 0.0),
                 Duration = (double)(x["seconds"] ?? 0.0),
-                Bytes = (int)(x["bytes"] ?? 0),
+                Bytes = (long)(x["bytes"] ?? 0),
                 BitsPerSecond = (double) (x["bits_per_second"]?? 0.0),
                 Retransmits = (double)(x["retransmits"] ?? 0)
             }).ToArray();
