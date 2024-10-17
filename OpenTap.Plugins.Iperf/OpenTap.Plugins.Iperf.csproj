@@ -36,6 +36,9 @@
     <None Update="Packages\Iperf\MacOS\iperf3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Packages\Iperf\linux-x64\iperf3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

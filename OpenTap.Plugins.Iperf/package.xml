@@ -22,6 +22,8 @@ $(GitVersion) - Gets the version from Git in the recommended format Major.Minor.
     <File Path="Packages/Iperf/iperf-3.1.3-win64/iperf3.exe"></File>
 
     <File Path="Packages/Iperf/MacOS/iperf3"></File>
+
+    <File Path="Packages/Iperf/linux-x64/iperf3"></File>
     
     <File Path="Packages/Iperf/OpenTap.Plugins.Iperf.dll" SourcePath="OpenTap.Plugins.Iperf.dll">
       <SetAssemblyInfo Attributes="Version"/>
