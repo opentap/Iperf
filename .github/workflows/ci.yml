@@ -42,7 +42,7 @@ jobs:
           name: package
           path: ./
       - name: Setup OpenTAP
-        uses: opentap/setup-opentap@c60c3386267d6c8c39d5ad8bd76a219c20f12f33 #fix/upgrade-node-to-node24 (pending v1.1)
+        uses: opentap/setup-opentap@2e83d3a5e985a85061d009ac858817c422ee014f #fix/upgrade-node-to-node24 (pending v1.1)
         with:
           version: 9.18.4
       - name: Install PackagePublish
